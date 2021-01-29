@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include "nrf_delay.h"
+#include "nrf_gpio.h"
 
 #include "simple_ble.h"
 
@@ -33,11 +35,91 @@ void ble_evt_adv_report(ble_evt_t const* p_ble_evt) {
   uint8_t* adv_buf = adv_report->data.p_data; // array of up to 31 bytes of advertisement payload data
   uint16_t adv_len = adv_report->data.len; // length of advertisement payload data
 
-  printf("Received an advertisement!\n");
+  //printf("Received an advertisement!\n");
+  uint8_t i,j,offset,p;
+  //printf("ble_addr: %x\n",ble_addr);
+  //printf("adv_len: %d\n",adv_len);
+  //printf("adv_buf:");
+  //for(i = 0; i < adv_len; i++){
+  //  printf("%02x",adv_buf[i]);
+  //}
+  //printf("\n");
+  uint8_t sub_length = 0;
+  p = 0;
+  //printf("%d\n",adv_buf[0]);
+  while(p < adv_len){
+    sub_length = adv_buf[p];
+    //printf("substring length: %d\n",sub_length);
+    offset = p+1;
+    for(j = 0; j < sub_length; j++){
+      //printf("%02x",adv_buf[j+offset]);
+    }
+    //printf("\n");
+    switch (adv_buf[offset])
+      {
+      case 0x01:
+        //printf("flags:");
+        for(i = 0; i < sub_length-1; i++){
+          //printf("%02x",adv_buf[i+offset+2]);
+        }
+        //printf("\n");
+        break;
+      case 0x02:
+        break;
+      case 0x03:
+        break;
+      case 0x04:
+        break;
+      case 0x05:
+        break;
+      case 0x06:
+        break;
+      case 0x07:
+        break;
+      case 0x08:
+        break;
+      case 0x09:
+        printf("local name: ");
+        char local_name[31];
+        for(i = 0; i < sub_length-1; i++){
+          local_name[i] = adv_buf[i+offset+1];
+        }
+        //local_name[i] = "\0";
+
+        printf("%s\n",local_name);
+        break;
+      case 0x0a:
+        break;
+      case 0x0b:
+        break;
+      case 0x0c:
+        break;
+      case 0x0d:
+        break;
+      case 0x0e:
+        break;
+      case 0x0f:
+        break;
+      case 0x10:
+        printf("device id: ");
+        for(i = 0; i < sub_length-1; i++){
+          printf("%02x",adv_buf[i+offset+1]);
+        }
+        printf("\n");
+        break;
+      default:
+        break;
+      }
+    //printf("\n");
+    p += sub_length + 1;
+  }
+  //printf("leaving adv_scan\n");
+  
 }
 
 
 int main(void) {
+
 
   // Setup BLE
   // Note: simple BLE is our own library. You can find it in `nrf5x-base/lib/simple_ble/`
@@ -46,6 +128,7 @@ int main(void) {
 
   // Start scanning
   scanning_start();
+  
 
   // go into low power mode
   while(1) {

@@ -15,7 +15,7 @@ static simple_ble_config_t ble_config = {
         // c0:98:e5:4e:xx:xx
         .platform_id       = 0x4E,   // used as 4th octect in device BLE address
         .device_id         = 0xAABB, // must be unique on each device you program!
-        .adv_name          = "BLE-NIUS", // used in advertisements if there is room
+        .adv_name          = "BLE-NIUSy", // used in advertisements if there is room
         .adv_interval      = MSEC_TO_UNITS(1000, UNIT_0_625_MS),
         .min_conn_interval = MSEC_TO_UNITS(500, UNIT_1_25_MS),
         .max_conn_interval = MSEC_TO_UNITS(1000, UNIT_1_25_MS),
@@ -37,9 +37,9 @@ int main(void) {
   simple_ble_app = simple_ble_init(&ble_config);
 
   // Start Advertising
-  uint8_t ble_data[BLE_GAP_ADV_SET_DATA_SIZE_MAX] = {0x02, 0x01, 0x06, 0x0A, 0x09, 0x42, 0x4c, 0x45, 0x2D, 0x4E, 0x49, 0x55, 0x53, 0x79, 0x03, 0x10, 0xAA, 0xBB,};
+  char url[] = "google.com";
 
-  simple_ble_adv_raw(ble_data, 18);
+  simple_ble_es_with_name(url);
   printf("Started BLE advertisements\n");
 
   while(1) {
